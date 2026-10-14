@@ -48,7 +48,7 @@ body.embed .mini{display:flex}
   function sec(t, v) { return v ? '<h2>' + esc(t) + '</h2><p>' + esc(v) + '</p>' : ''; }
   function sev(s) { var n = (s || '').toLowerCase(); return n.indexOf('nghiêm') >= 0 ? 'sev1' : n.indexOf('trung') >= 0 ? 'sev2' : n.indexOf('nhỏ') >= 0 ? 'sev3' : ''; }
   function fail(msg) { box.innerHTML = '<div class="muted">' + esc(msg) + '</div>'; }
-  if (!/^[iqt]:\S{1,70}$/.test(id)) return fail('Liên kết không hợp lệ.');
+  if (!/^[iqtn]:\S{1,70}$/.test(id)) return fail('Liên kết không hợp lệ.');
   fetch(API + '?action=pub&id=' + encodeURIComponent(id)).then(function (r) { return r.json(); }).then(function (d) {
     if (!d || !d.ok) return fail(d && d.error === 'not_found' ? 'Bài viết không tồn tại hoặc đã bị ẩn.' : 'Không tải được nội dung.');
     var it = d.item, h = '';
@@ -57,10 +57,16 @@ body.embed .mini{display:flex}
     if (it.kind === 'issue') { if (it.severity) tags.push('<span class="tag ' + sev(it.severity) + '">' + esc(it.severity) + '</span>'); if (it.category) tags.push('<span class="tag">' + esc(it.category) + '</span>'); (it.parts || '').split(/[,;\n]/).forEach(function (p) { p = p.trim(); if (p) tags.push('<span class="tag">' + esc(p) + '</span>'); }); }
     if (it.kind === 'tip') tags.push('<span class="tag">Thủ thuật</span>' + (it.category ? '<span class="tag">' + esc(it.category) + '</span>' : ''));
     if (it.kind === 'qa') tags.push('<span class="tag">Hỏi đáp cộng đồng</span>');
+    if (it.kind === 'news') tags.push('<span class="tag">Tin nhanh</span>' + (it.category ? '<span class="tag">' + esc(it.category) + '</span>' : ''));
     h += '<div class="tags">' + tags.join('') + '</div><h1>' + esc(it.title) + '</h1>';
     if (it.car) h += '<div class="car">' + esc(it.car) + '</div>';
     if (it.kind === 'issue') {
       h += sec('Mã lỗi / Hệ thống', it.obd) + sec('Hiện tượng', it.description) + sec('Cách xử lý', it.fix) + sec('Tình trạng', it.status);
+    } else if (it.kind === 'news') {
+      if (it.summary) h += '<p style="margin-top:10px;font-weight:700">' + esc(it.summary) + '</p>';
+      if (it.body) h += '<p style="margin-top:8px">' + esc(it.body) + '</p>';
+      if (it.source) h += sec('Nguồn', it.source);
+      if (it.signature) h += '<div style="margin-top:14px;padding:10px 12px;border-radius:12px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-weight:600;white-space:pre-wrap">' + esc(it.signature) + '</div>';
     } else if (it.kind === 'tip') {
       h += sec('Nội dung', it.body) + sec('Nguồn', it.source);
     } else {
