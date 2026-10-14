@@ -1,0 +1,17 @@
+{
+  "name": "VFIX - Cẩm nang lỗi xe điện",
+  "short_name": "VFIX",
+  "description": "Tra cứu lỗi, thủ thuật, hỏi đáp và tin nhanh cho chủ xe VinFast và xe điện.",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06122e",
+  "theme_color": "#06122e",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
