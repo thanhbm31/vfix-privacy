@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VFIX – Cẩm nang xe điện và Hybrid</title>
+<meta name="description" content="Bài viết chia sẻ từ ứng dụng VFIX: lỗi xe, cách xử lý, thủ thuật và hỏi đáp cộng đồng.">
+<meta property="og:title" content="VFIX – Cẩm nang xe điện và Hybrid">
+<meta property="og:description" content="Lỗi xe, cách xử lý, thủ thuật và hỏi đáp cộng đồng.">
+<meta property="og:image" content="https://thanhbm31.github.io/vfix-privacy/assets/logo-mark.png">
+<link rel="icon" href="assets/logo-mark.png">
+<style>
+:root{--bg:#eef3fb;--card:#fff;--text:#0f172a;--muted:#475569;--line:#e2e8f0;--accent:#0459f0;--navy:#06122e;--cyan:#00e5ff}
+@media (prefers-color-scheme:dark){:root{--bg:#020817;--card:#0b1630;--text:#e2e8f0;--muted:#94a3b8;--line:#1b2a4d;--accent:#4ea8ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.top{background:radial-gradient(120% 80% at 85% 0%,#10307a 0%,rgba(16,48,122,0) 60%),linear-gradient(180deg,#0b1c4a,#06122e 55%,#020817);padding:18px 16px 22px}
+.top img{height:56px;display:block;margin:0 auto}
+main{max-width:720px;margin:-12px auto 0;padding:0 16px 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;box-shadow:0 6px 24px rgba(2,8,23,.08)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.tag{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:#e8f1ff;color:#0646c4}
+.tag.sev1{background:#fee2e2;color:#b91c1c}.tag.sev2{background:#ffedd5;color:#c2410c}.tag.sev3{background:#fef9c3;color:#a16207}
+h1{font-size:20px;line-height:1.35;margin:0 0 4px}.car{font-weight:700;color:var(--accent);font-size:13px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:16px 0 4px}
+p{margin:0;white-space:pre-wrap}.meta{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:14px;align-items:center}
+.cmt{border-top:1px solid var(--line);padding:10px 0}.cmt b{font-size:13px}.badge{font-size:10px;font-weight:800;padding:1px 6px;border-radius:6px;margin-left:6px;background:#fef3c7;color:#92400e}.badge.admin{background:#fee2e2;color:#b91c1c}
+.cta{display:block;text-align:center;margin:18px 0 0;padding:12px;border-radius:14px;background:var(--accent);color:#fff;font-weight:800;text-decoration:none}
+.muted{color:var(--muted);text-align:center;padding:30px 0}
+footer{font-size:12px;color:var(--muted);text-align:center;margin-top:22px}footer a{color:var(--muted)}
+body.embed{background:transparent}body.embed .top,body.embed footer{display:none}body.embed main{margin:0;padding:0}body.embed .card{box-shadow:none}
+.mini{display:none;text-decoration:none;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--muted);margin-top:10px}.mini img{height:18px}
+body.embed .mini{display:flex}
+</style>
+</head>
+<body>
+<div class="top"><img src="assets/logo.png" alt="VFIX by ThanhBM"></div>
+<main>
+  <div class="card" id="box"><div class="muted">Đang tải nội dung…</div></div>
+  <footer>VFIX – Cẩm nang xe điện và Hybrid · <a href="./">Giới thiệu</a> · <a href="privacy.html">Quyền riêng tư</a></footer>
+</main>
+<script>
+(function () {
+  var API = 'https://script.google.com/macros/s/AKfycbzRJM-gP3V0-Vq3zDk14MOPifWx3akgj15tYc65JkR3LAU_Xyuv5FA0nvST8umkhXC_iw/exec';
+  var q = new URLSearchParams(location.search);
+  var id = q.get('id') || '';
+  if (q.get('embed') === '1') document.body.classList.add('embed');
+  var box = document.getElementById('box');
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function sec(t, v) { return v ? '<h2>' + esc(t) + '</h2><p>' + esc(v) + '</p>' : ''; }
+  function sev(s) { var n = (s || '').toLowerCase(); return n.indexOf('nghiêm') >= 0 ? 'sev1' : n.indexOf('trung') >= 0 ? 'sev2' : n.indexOf('nhỏ') >= 0 ? 'sev3' : ''; }
+  function fail(msg) { box.innerHTML = '<div class="muted">' + esc(msg) + '</div>'; }
+  if (!/^[iqt]:\S{1,70}$/.test(id)) return fail('Liên kết không hợp lệ.');
+  fetch(API + '?action=pub&id=' + encodeURIComponent(id)).then(function (r) { return r.json(); }).then(function (d) {
+    if (!d || !d.ok) return fail(d && d.error === 'not_found' ? 'Bài viết không tồn tại hoặc đã bị ẩn.' : 'Không tải được nội dung.');
+    var it = d.item, h = '';
+    document.title = it.title + ' – VFIX';
+    var tags = [];
+    if (it.kind === 'issue') { if (it.severity) tags.push('<span class="tag ' + sev(it.severity) + '">' + esc(it.severity) + '</span>'); if (it.category) tags.push('<span class="tag">' + esc(it.category) + '</span>'); (it.parts || '').split(/[,;\n]/).forEach(function (p) { p = p.trim(); if (p) tags.push('<span class="tag">' + esc(p) + '</span>'); }); }
+    if (it.kind === 'tip') tags.push('<span class="tag">Thủ thuật</span>' + (it.category ? '<span class="tag">' + esc(it.category) + '</span>' : ''));
+    if (it.kind === 'qa') tags.push('<span class="tag">Hỏi đáp cộng đồng</span>');
+    h += '<div class="tags">' + tags.join('') + '</div><h1>' + esc(it.title) + '</h1>';
+    if (it.car) h += '<div class="car">' + esc(it.car) + '</div>';
+    if (it.kind === 'issue') {
+      h += sec('Mã lỗi / Hệ thống', it.obd) + sec('Hiện tượng', it.description) + sec('Cách xử lý', it.fix) + sec('Tình trạng', it.status);
+    } else if (it.kind === 'tip') {
+      h += sec('Nội dung', it.body) + sec('Nguồn', it.source);
+    } else {
+      h += '<p style="margin-top:10px">' + esc(it.body) + '</p><div class="meta">' + esc(it.author) + ' · ' + esc(it.time) + '</div>';
+      if (it.comments && it.comments.length) {
+        h += '<h2>Trả lời (' + it.comments.length + ')</h2>';
+        it.comments.forEach(function (c) {
+          var b = c.author.role === 'admin' ? '<span class="badge admin">Admin</span>' : c.author.role === 'expert' ? '<span class="badge">Chuyên gia' + (c.author.level ? ' · ' + esc(c.author.level) : '') + '</span>' : '';
+          h += '<div class="cmt"><b>' + esc(c.author.name) + '</b>' + b + ' <small style="color:var(--muted)">' + esc(c.time) + (c.likes ? ' · ❤ ' + c.likes : '') + '</small><p>' + esc(c.body) + '</p></div>';
+        });
+      }
+    }
+    h += '<div class="meta"><span>👁 ' + (d.views || 0) + ' lượt xem</span><span>↗ ' + (d.shares || 0) + ' chia sẻ</span>' + (it.date ? '<span>Cập nhật ' + esc(it.date) + '</span>' : '') + '</div>';
+    h += '<a class="mini" target="_blank" rel="noopener" href="v.html?id=' + encodeURIComponent(id) + '"><img src="assets/logo-mark.png" alt=""> Xem trên VFIX – Cẩm nang xe điện và Hybrid</a>';
+    if (!document.body.classList.contains('embed')) h += '<a class="cta" href="./">Tải ứng dụng VFIX để xem thêm</a>';
+    box.innerHTML = h;
+  }).catch(function () { fail('Không tải được nội dung. Vui lòng thử lại.'); });
+})();
+</script>
+</body>
+</html>
